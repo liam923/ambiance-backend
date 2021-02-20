@@ -8,6 +8,8 @@ authors = ["Liam Stevenson <liam.m.stevenson@gmail.com>"]
 python = "^3.7"
 Django = "^3.1.7"
 black = "^20.8b1"
+pendulum = "^2.1.2"
+dataclasses-json = "^0.5.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
