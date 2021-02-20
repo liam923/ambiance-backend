@@ -3,6 +3,9 @@ from typing import Dict
 
 from dataclasses_json import DataClassJsonMixin
 
+from ambiance.model.session import Session
+from ambiance.model.user import User
+
 
 @dataclass
 class _DataBase(DataClassJsonMixin):
