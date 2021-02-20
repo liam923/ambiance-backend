@@ -138,3 +138,9 @@ dmypy.json
 cython_debug/
 
 .DS_Store
+
+#Spotify Secrets
+ambiance/data/secret
+
+# idea config
+.idea

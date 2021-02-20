@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.http import HttpRequest, JsonResponse
 
 DEBUG = True
-SECRET_KEY = 'peepeepoopoojizzjazz'
+SECRET_KEY = "peepeepoopoojizzjazz"
 ROOT_URLCONF = __name__
 
 

@@ -8,6 +8,7 @@ authors = ["Liam Stevenson <liam.m.stevenson@gmail.com>"]
 python = "^3.7"
 Django = "^3.1.7"
 black = "^20.8b1"
+spotipy = "^2.16.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
