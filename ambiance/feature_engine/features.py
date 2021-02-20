@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple, Any
 
 def vectorize_features(song: Dict[str, Any]) -> Tuple[str, np.ndarray]:
     return (
-        song["id"],
+        song["uri"],
         np.array(
             [
                 song["danceability"],
