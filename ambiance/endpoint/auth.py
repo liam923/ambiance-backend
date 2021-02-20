@@ -27,7 +27,7 @@ def authorize(params: AuthorizeRequest, **kwargs) -> HttpResponseRedirect:
         },
     ).json()
 
-    credentials = Credentials(refresh_token=response["refresh_token"], access_token=response["access_token"])
+    credentials = Credentials.from_response(response)
 
     redirect_url = furl(state.redirect_uri)
     redirect_url.args["user_token"], user_id = token.issue()
