@@ -12,6 +12,8 @@ pendulum = "^2.1.2"
 dataclasses-json = "^0.5.2"
 spotipy = "^2.16.1"
 numpy = "^1.20.1"
+PyJWT = "^2.0.1"
+cryptography = "^3.4.6"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
