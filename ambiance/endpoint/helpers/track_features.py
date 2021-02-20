@@ -1,19 +1,24 @@
-from typing import List
+from typing import List, Dict, Tuple
 
-from django.http import JsonResponse
+import numpy as np
 from spotipy.oauth2 import SpotifyOAuth
 import json
 import spotipy
 
+from ambiance.feature_engine.features import vectorize_features
 
-def get_tracks_features(tracks: List[str]) -> JsonResponse:
+
+def get_tracks_features(tracks: List[str]) -> List[Tuple[str, np.ndarray]]:
     # eventually going to get this from user_id -> oAuth dict
     sp = spotipy.Spotify(
         oauth_manager=SpotifyOAuth())
     sp.trace = True
 
     features = sp.audio_features(tracks)
-    return json.dumps(features, indent=4)
+
+    feature_map = [vectorize_features(track) for track in features]
+
+    return feature_map
 
 
 # demo
