@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import List, Dict, Optional
 
 import numpy as np
 from dataclasses_json import DataClassJsonMixin
@@ -16,7 +16,8 @@ class SessionData(DataClassJsonMixin):
 @dataclass
 class Session(DataClassJsonMixin):
     id: str
-    users: Dict[str, User]
+    users: List[str]
+    name: str
     jukeboxes: Dict[str, Jukebox]
     preferences: Optional[str]
 
