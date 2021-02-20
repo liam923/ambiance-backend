@@ -1,13 +1,12 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from dataclasses_json import dataclass_json
+from dataclasses_json import dataclass_json, DataClassJsonMixin
 from django.http import JsonResponse
 
 
-@dataclass_json
 @dataclass
-class ErrorMessage:
+class ErrorMessage(DataClassJsonMixin):
     message: str
 
 

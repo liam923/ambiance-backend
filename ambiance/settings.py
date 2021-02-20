@@ -1,7 +1,9 @@
+import socket
+
 from django.conf.urls import url
 from django.http import HttpRequest, JsonResponse
 
-from ambiance.endpoint import session
+from ambiance.endpoint import session, auth
 
 DEBUG = True
 SECRET_KEY = "peepeepoopoojizzjazz"
@@ -14,5 +16,7 @@ def home(request: HttpRequest) -> JsonResponse:
 
 urlpatterns = [
     url(r"^$", home),
-    url(r"^session/create$", session.create),
+    url(r"login/?$", auth.login),
+    url(r"login/authorize?$", auth.authorize),
+    url(r"^session/create/?$", session.create),
 ]

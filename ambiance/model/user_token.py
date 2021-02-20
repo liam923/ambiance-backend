@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 
-from dataclasses_json import dataclass_json
+from dataclasses_json import DataClassJsonMixin
 from pendulum import DateTime
 
 
-@dataclass_json
 @dataclass
-class UserToken:
+class UserToken(DataClassJsonMixin):
     exp: DateTime
     iss: str
     aud: str

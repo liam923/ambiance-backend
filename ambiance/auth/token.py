@@ -1,6 +1,5 @@
 import uuid
-from json import JSONDecodeError
-from typing import Optional
+from typing import Optional, Tuple
 
 import jwt
 from pendulum import DateTime
@@ -8,12 +7,11 @@ from pendulum import DateTime
 from ambiance.keys import jwt as key
 from ambiance.model.user_token import UserToken
 
-
 ALGORITHM = "RS256"
 SERVER_NAME = "ambiance.backend"
 
 
-def issue(user: Optional[str] = None) -> str:
+def issue(user: Optional[str] = None) -> Tuple[str, str]:
     if user is None:
         user = str(uuid.uuid4())
 
@@ -25,12 +23,14 @@ def issue(user: Optional[str] = None) -> str:
         aud=SERVER_NAME,
     )
 
-    return jwt.encode(token.to_dict(), key.PRIVATE, algorithm=ALGORITHM)
+    return jwt.encode(token.to_dict(), key.PRIVATE, algorithm=ALGORITHM), user
 
 
 def verify(token: str) -> Optional[str]:
     try:
-        token_dict = jwt.decode(token, key.PUBLIC, algorithms=ALGORITHM, audience=SERVER_NAME)
+        token_dict = jwt.decode(
+            token, key.PUBLIC, algorithms=ALGORITHM, audience=SERVER_NAME
+        )
         decoded = UserToken.from_dict(token_dict)
     except Exception:
         return None

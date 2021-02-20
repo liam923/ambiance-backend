@@ -17,6 +17,7 @@ def endpoint(
     header: Any = None,
     method: str = GET,
     auth_required: bool = True,
+    unencoded_return: bool = True,
 ) -> Callable[[Callable], Callable[[HttpRequest], HttpResponse]]:
     def endpoint_callback(
         endpoint_function: Callable,
@@ -27,7 +28,9 @@ def endpoint(
                     try:
                         decoded_body = body.from_json(request.body)
                     except (JSONDecodeError, KeyError):
-                        return Error(status_code=400, message=ErrorMessage("Invalid JSON schema")).as_response()
+                        return Error(
+                            status_code=400, message=ErrorMessage("Invalid JSON schema")
+                        ).as_response()
                 else:
                     decoded_body = None
 
@@ -38,7 +41,9 @@ def endpoint(
                         }
                         decoded_url_params = params.from_dict(params_dict)
                     except (JSONDecodeError, KeyError):
-                        return Error(status_code=400, message=ErrorMessage("Invalid params")).as_response()
+                        return Error(
+                            status_code=400, message=ErrorMessage("Invalid params")
+                        ).as_response()
                 else:
                     decoded_url_params = None
 
@@ -49,7 +54,9 @@ def endpoint(
                         }
                         decoded_header = params.from_dict(header_dict)
                     except (JSONDecodeError, KeyError):
-                        return Error(status_code=400, message=ErrorMessage("Invalid header")).as_response()
+                        return Error(
+                            status_code=400, message=ErrorMessage("Invalid header")
+                        ).as_response()
                 else:
                     decoded_header = None
 
@@ -66,8 +73,13 @@ def endpoint(
                         body=decoded_body,
                         header=decoded_header,
                         user=user_id,
-                    ).to_dict()
-                    return JsonResponse(result)
+                        request_uri=request.get_raw_uri(),
+                    )
+
+                    if unencoded_return:
+                        return JsonResponse(result.to_dict())
+                    else:
+                        return result
                 except Error as error:
                     return error.as_response()
             else:

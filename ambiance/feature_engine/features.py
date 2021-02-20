@@ -1,5 +1,6 @@
-import numpy as np
 from typing import Dict, List, Tuple, Any
+
+import numpy as np
 
 
 def vectorize_features(song: Dict[str, Any]) -> Tuple[str, np.ndarray]:
