@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 
+import spotipy
 import numpy as np
 from dataclasses_json import DataClassJsonMixin
 from spotipy import Spotify
@@ -14,11 +15,12 @@ from ambiance.model.spotify_auth import Credentials
 class User(DataClassJsonMixin):
     id: str
     credentials: Credentials
-    spotipy: Spotify
+    spotipy: Spotify = None
     library: List[Tuple[str, np.ndarray]] = field(default_factory=list)
     pref: np.ndarray = field(default_factory=lambda : np.array([]))
 
     def __post_init__(self):
+        self.spotipy = spotipy.Spotify(client_credentials_manager=self.credentials)
         self.update()
 
     def update(self):

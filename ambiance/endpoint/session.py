@@ -6,9 +6,8 @@ from .helpers import top_tracks, track_features
 from dataclasses_json import dataclass_json
 
 from ambiance.endpoint.endpoint import endpoint, POST, PUT
-from ..feature_engine.features import average_features
-from ..model.db import DB
-from ..model.user import User
+from ambiance.endpoint.endpoint import endpoint, POST
+from ambiance.model.db import DB
 
 
 @dataclass_json
@@ -27,6 +26,9 @@ class CreateOutput:
 def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
     new_id = uuid.uuid4()
 
+    res = str(DB.users[user].spotipy.artist_albums("spotify:artist:2WX2uTcsvV5OnS0inACecP", album_type='album'))
+
+    return CreateOutput(res)
 
 @dataclass_json
 @dataclass
