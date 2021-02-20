@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 import numpy as np
 from dataclasses_json import DataClassJsonMixin
