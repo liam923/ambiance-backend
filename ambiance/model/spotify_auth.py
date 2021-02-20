@@ -15,6 +15,14 @@ class Credentials(DataClassJsonMixin):
     access_token: Optional[str] = None
     access_token_expiration: Optional[DateTime] = None
 
+    @staticmethod
+    def from_response(response: dict) -> "Credentials":
+        return Credentials(
+            refresh_token=response["refresh_token"],
+            access_token=response["access_token"],
+            access_token_expiration=pendulum.now().add(seconds=response["expires_in"]),
+        )
+
     def get_access_token(self):
         if not self.access_token or self.access_token_expiration > pendulum.now().add(
             minutes=1

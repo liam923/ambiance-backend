@@ -1,7 +1,7 @@
-from typing import Dict, List, Tuple, Any
+import math
 
 import numpy as np
-
+from typing import Dict, List, Tuple, Any
 
 def vectorize_features(song: Dict[str, Any]) -> Tuple[str, np.ndarray]:
     return (
@@ -43,7 +43,7 @@ def euclidean_distance(
     dist = np.copy(first)
     dist -= second
     dist = np.power(dist, 2.0)
-    return (np.sum(dist) ^ 0.5) * scale
+    return math.pow(np.sum(dist).tolist(), 0.5) * scale
 
 
 def rank_library(
