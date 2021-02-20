@@ -10,6 +10,4 @@ def home(request: HttpRequest) -> JsonResponse:
     return JsonResponse({"message": "Hello world."})
 
 
-urlpatterns = [
-    url(r'^$', home),
-]
+urlpatterns = [url(r"^$", home)]
