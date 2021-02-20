@@ -8,6 +8,7 @@ from ambiance.keys import spotify
 from ambiance.model.auth_io import LoginRequest, AuthorizeRequest, State
 from ambiance.model.db import DB
 from ambiance.model.spotify_auth import Credentials
+from ambiance.model.user import User
 
 SCOPES = " ".join(["user-library-read", "playlist-modify-private", "user-top-read"])
 
@@ -33,11 +34,10 @@ def authorize(params: AuthorizeRequest, **kwargs) -> HttpResponseRedirect:
     redirect_url.args["user_token"], user_id = token.issue()
     redirect_url.args["state"] = state.given_state
 
-    user = DB.users[user_id]
-
     credentials = Credentials.from_response(response)
-    user.credentials = credentials
-    user.spotipy = spotipy.Spotify()
+    sp = spotipy.Spotify(client_credentials_manager=credentials)
+
+    DB.users[user_id] = User(credentials=credentials, id=user_id, spotipy=sp)
 
     return HttpResponseRedirect(redirect_url.url)
 
