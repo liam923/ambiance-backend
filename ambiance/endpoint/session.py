@@ -19,5 +19,5 @@ class CreateOutput:
 
 
 @endpoint(method=POST, body=CreateInput)
-def create(body: CreateInput, user: str) -> CreateOutput:
+def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
     pass
