@@ -3,10 +3,11 @@ import math
 import numpy as np
 from typing import Dict, List, Tuple, Any
 
-def vectorize_features(song: Dict[str, Any]) -> Tuple[str, np.ndarray]:
-    return (
-        song["uri"],
-        np.array(
+from ambiance.model.track import Track
+
+
+def vectorize_features(song: Dict[str, Any], track_info: Dict[str, Any]) -> Track:
+    features = np.array(
             [
                 song["danceability"],
                 song["energy"],
@@ -20,17 +21,18 @@ def vectorize_features(song: Dict[str, Any]) -> Tuple[str, np.ndarray]:
                 song["valence"],
                 song["tempo"],
             ]
-        ),
-    )
+        )
+
+    return Track(song["uri"], track_info["name"], [artist["name"] for artist in track_info["artists"]], features)
 
 
-def average_features(library: List[Tuple[str, np.ndarray]]) -> np.ndarray:
+def average_features(library: List[Track]) -> np.ndarray:
     feature_sum = np.zeros(11)
 
     feature_count = 0.0
 
     for song in library:
-        feature_sum += song[1]
+        feature_sum += song.features
         feature_count += 1
 
     return feature_sum / feature_count
@@ -47,6 +49,6 @@ def euclidean_distance(
 
 
 def rank_library(
-    library: List[Tuple[str, np.ndarray]], features: np.ndarray
-) -> List[Tuple[str, np.ndarray]]:
-    return sorted(library, key=lambda song: euclidean_distance(song[1], features))
+    library: List[Track], features: np.ndarray
+) -> List[Track]:
+    return sorted(library, key=lambda song: euclidean_distance(song.features, features))
