@@ -3,14 +3,14 @@ from typing import List
 
 import spotipy
 
-from credentials import credentials
+from ambiance.model.db import DB
 
 scope = 'user-library-read'
 
 
-def get_saved_tracks() -> List[str]:
+def get_saved_tracks(user_id: str) -> List[str]:
     response = []
-    sp = spotipy.Spotify(client_credentials_manager=credentials)
+    sp = DB.users[user_id].spotipy
 
     results = sp.current_user_saved_tracks()
     for item in results['items']:

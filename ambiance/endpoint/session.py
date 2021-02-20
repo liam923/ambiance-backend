@@ -7,6 +7,7 @@ from dataclasses_json import dataclass_json
 from ambiance.endpoint.endpoint import endpoint, POST, PUT
 from ambiance.endpoint.endpoint import endpoint, POST
 from ambiance.model.db import DB
+from ambiance.model.session import Session
 
 
 @dataclass_json
@@ -23,11 +24,15 @@ class CreateOutput:
 
 @endpoint(method=POST, body=CreateInput)
 def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
-    new_id = uuid.uuid4()
+    session_id = uuid.uuid4()
 
-    res = str(DB.users[user].spotipy.artist_albums("spotify:artist:2WX2uTcsvV5OnS0inACecP", album_type='album'))
+    # Update this user's preference
+    DB.users[user].update_preference()
 
-    return CreateOutput(res)
+    session = Session(id=session_id, users=[user])
+
+    DB.sessions.update(session_id, session)
+
 
 @dataclass_json
 @dataclass
@@ -42,3 +47,15 @@ def join(body: JoinInput, user: str, **kwargs) -> None:
         session.users.append(user)
 
     DB.users[user].update()
+
+
+@dataclass_json
+@dataclass
+class UpdateInput:
+    session_id: str
+    vibe: any
+
+
+@endpoint(method=PUT, body=JoinInput)
+def update(body: UpdateInput, **kwargs) -> None:
+    pass
