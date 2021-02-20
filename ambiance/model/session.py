@@ -17,6 +17,7 @@ class SessionData(DataClassJsonMixin):
 class Session(DataClassJsonMixin):
     id: str
     users: List[str]
+    name: str
     jukeboxes: Dict[str, Jukebox]
     preferences: Optional[str]
 
