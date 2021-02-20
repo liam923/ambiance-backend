@@ -7,7 +7,7 @@ from ambiance.keys import spotify
 from ambiance.model.auth_io import LoginRequest, AuthorizeRequest, State
 from ambiance.model.spotify_auth import Credentials
 
-SCOPES = " ".join(["user-library-read", "playlist-modify-private"])
+SCOPES = " ".join(["user-library-read", "playlist-modify-private", "user-top-read"])
 
 
 @endpoint(

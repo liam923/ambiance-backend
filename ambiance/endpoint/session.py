@@ -1,5 +1,6 @@
 from dataclasses import field, dataclass
 from typing import List
+import uuid
 
 from dataclasses_json import dataclass_json
 
@@ -20,4 +21,5 @@ class CreateOutput:
 
 @endpoint(method=POST, body=CreateInput)
 def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
-    pass
+    new_id = uuid.uuid4()
+
