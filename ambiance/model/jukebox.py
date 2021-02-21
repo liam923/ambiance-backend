@@ -73,7 +73,6 @@ class Jukebox(DataClassJsonMixin):
 
     # starts the function that checks whether the song is ending
     def start(self) -> bool:
-        print(self._sp().current_playback())
         if self._sp().current_playback() is None:
             return False
         else:
