@@ -1,19 +1,18 @@
-import json
-from typing import List
+from typing import Set, List
 
 import ambiance.model.db as db
 
 
-def get_playlist_tracks(user_id: str) -> List[str]:
+def get_playlist_tracks(user_id: str) -> Set[str]:
     sp = db.DB().users[user_id].spotipy
 
     spotify_id = sp.me()['id']
     user_playlists = [playlist["uri"] for playlist in sp.user_playlists(spotify_id)["items"]]
     tracks = set()
     for playlist in user_playlists:
-        playlist.union(set(playlist_to_tracks(user_id, playlist)))
+        tracks.union(set(playlist_to_tracks(user_id, playlist)))
 
-    return list(tracks)
+    return tracks
 
 
 def playlist_to_tracks(user_id: str, playlist_uri: str) -> List[str]:

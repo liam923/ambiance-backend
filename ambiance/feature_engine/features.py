@@ -1,7 +1,7 @@
 import math
 
 import numpy as np
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Tuple, Any, Iterable
 
 from ambiance.model.track import Track
 
@@ -25,7 +25,7 @@ def vectorize_features(song: Dict[str, Any], track_info: Dict[str, Any]) -> Trac
     return Track(song["uri"], track_info["name"], [artist["name"] for artist in track_info["artists"]], features)
 
 
-def average_features(library: List[Track]) -> np.ndarray:
+def average_features(library: Iterable[Track]) -> np.ndarray:
     feature_sum = np.zeros(6)
 
     feature_count = 0.0
@@ -48,6 +48,6 @@ def euclidean_distance(
 
 
 def rank_library(
-    library: List[Track], features: np.ndarray, scale_map: Dict[str, float]
+    library: Iterable[Track], features: np.ndarray, scale_map: Dict[str, float]
 ) -> List[Track]:
     return sorted(library, key=lambda song: euclidean_distance(song.features, features, scale=scale_map[song.uri]))
