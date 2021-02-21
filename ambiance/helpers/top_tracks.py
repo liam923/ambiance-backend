@@ -5,7 +5,7 @@ import ambiance.model.db as db
 
 def get_top_tracks(user_id: str, limit: int = 50) -> List[str]:
     response = []
-    sp = db.DB.users[user_id].spotipy
+    sp = db.DB().users[user_id].spotipy
 
     ranges = ['short_term', 'medium_term', 'long_term']
 

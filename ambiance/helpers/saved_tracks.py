@@ -10,7 +10,7 @@ scope = 'user-library-read'
 
 def get_saved_tracks(user_id: str) -> List[str]:
     response = []
-    sp = db.DB.users[user_id].spotipy
+    sp = db.DB().users[user_id].spotipy
 
     results = sp.current_user_saved_tracks()
     for item in results['items']:

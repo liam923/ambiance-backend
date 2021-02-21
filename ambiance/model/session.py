@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Dict, Optional
 
 import numpy as np
@@ -13,19 +13,19 @@ from ambiance.model.track import Track
 
 @dataclass
 class SessionData(DataClassJsonMixin):
-    vibe_feature_vector: np.ndarray
+    vibe_feature_vector: np.ndarray = field(default_factory=lambda: np.ndarray([]))
 
 
 @dataclass
 class Session(DataClassJsonMixin):
     id: str
-    users: List[str]
-    name: str
-    jukeboxes: Dict[str, Jukebox]
-    vibe: Optional[str]
-    pool: List[Track]
+    users: List[str] = field(default_factory=list)
+    name: str = ""
+    jukeboxes: Dict[str, Jukebox] = field(default_factory=dict)
+    vibe: Optional[str] = None
+    pool: List[Track] = field(default_factory=list)
 
-    processed_data: SessionData
+    processed_data: SessionData = field(default_factory=SessionData)
 
     def vibe_check(self) -> np.ndarray:
         if self.vibe is not None:
@@ -52,7 +52,7 @@ class Session(DataClassJsonMixin):
                 if track not in new_pool:
                     new_pool.append(track)
 
-        self.pool = rank_library(self.vibe_check())
+        self.pool = rank_library(new_pool, self.vibe_check())
 
     def change_vibe(self, uri: str = None) -> None:
         self.vibe = uri

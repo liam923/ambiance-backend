@@ -6,7 +6,7 @@ from furl import furl
 from ambiance.endpoint.endpoint import *
 from ambiance.keys import spotify
 from ambiance.model.auth_io import LoginRequest, AuthorizeRequest, State
-from ambiance.model.db import DB
+import ambiance.model.db as db
 from ambiance.model.spotify_auth import Credentials
 from ambiance.model.user import User
 
@@ -37,7 +37,7 @@ def authorize(params: AuthorizeRequest, **kwargs) -> HttpResponseRedirect:
     credentials = Credentials.from_response(response)
     sp = spotipy.Spotify(client_credentials_manager=credentials)
 
-    DB.users[user_id] = User(credentials=credentials, id=user_id, spotipy=sp)
+    db.DB().users[user_id] = User(credentials=credentials, id=user_id, spotipy=sp)
 
     return HttpResponseRedirect(redirect_url.url)
 

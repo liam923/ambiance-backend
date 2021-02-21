@@ -21,10 +21,10 @@ class CreateOutput(DataClassJsonMixin):
 
 @endpoint(method=POST, body=CreateInput)
 def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
-    session_id = uuid.uuid4()
+    session_id = str(uuid.uuid4())
 
     # Update this user's preference
-    master_user = db.DB.users[user]
+    master_user = db.DB().users[user]
     master_user.update_preference()
     master_user.update_library()
 
@@ -32,7 +32,7 @@ def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
 
     session.change_vibe(body.vibe)
 
-    db.DB.sessions.update(session_id, session)
+    DB.sessions.update(session_id, session)
 
     return CreateOutput(session_id=str(session_id))
 
@@ -44,12 +44,12 @@ class JoinInput(DataClassJsonMixin):
 
 @endpoint(method=PUT, body=JoinInput)
 def join(body: JoinInput, user: str, **kwargs) -> None:
-    session = db.DB.sessions[body.session_id]
+    session = DB().sessions[body.session_id]
     if user not in session.users:
         session.users.append(user)
         session.update_pool()
 
-    db.DB.users[user].update()
+    db.DB().users[user].update()
 
 
 @dataclass
@@ -60,4 +60,4 @@ class UpdateInput(DataClassJsonMixin):
 
 @endpoint(method=PUT, body=JoinInput)
 def update(body: UpdateInput, **kwargs) -> None:
-    db.DB.sessions[body.session_id].change_vibe(body.vibe)
+    db.DB().sessions[body.session_id].change_vibe(body.vibe)

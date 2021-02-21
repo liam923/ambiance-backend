@@ -33,5 +33,5 @@ class User(DataClassJsonMixin):
         self.pref = average_features(track_features.create_tracks(user_top_tracks))
 
     def update_library(self) -> None:
-        saved = saved_tracks.get_saved_tracks()
+        saved = saved_tracks.get_saved_tracks(self.id)
         self.library = track_features.create_tracks(saved)

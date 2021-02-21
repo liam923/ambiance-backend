@@ -24,7 +24,7 @@ class Credentials(DataClassJsonMixin):
         )
 
     def get_access_token(self):
-        if not self.access_token or self.access_token_expiration > pendulum.now().add(
+        if not self.access_token or self.access_token_expiration < pendulum.now().add(
             minutes=1
         ):
             response = requests.post(
