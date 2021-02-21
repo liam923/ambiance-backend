@@ -15,3 +15,5 @@ class Track(DataClassJsonMixin):
     def __eq__(self, other):
         return self.uri is other.uri
 
+    def __hash__(self):
+        return str.__hash__(self.uri)

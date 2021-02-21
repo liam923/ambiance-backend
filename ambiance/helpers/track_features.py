@@ -17,7 +17,7 @@ def create_tracks(tracks: List[str]) -> List[Track]:
     tracks = [track for track in tracks if track][:50]
 
     features = sorted((track for track in sp.audio_features(tracks) if track), key=lambda track: track["id"])
-    track_info = sorted(sp.tracks(tracks)['tracks'], key=lambda track: track["id"])
+    track_info = sorted((track for track in sp.tracks(tracks)['tracks'] if track), key=lambda track: track["id"])
 
     return [vectorize_features(track, info) for track, info in zip(features, track_info)]
 

@@ -7,10 +7,12 @@ import ambiance.model.db as db
 def get_playlist_tracks(user_id: str) -> List[str]:
     sp = db.DB().users[user_id].spotipy
 
-    user_playlists = [playlist["uri"] for playlist in sp.user_playlists(user_id)["items"]]
+    spotify_id = sp.me()['id']
+    user_playlists = [playlist["uri"] for playlist in sp.user_playlists(spotify_id)["items"]]
     tracks = set()
     for playlist in user_playlists:
-        playlist_tracks = sp.playlist_items(playlist)["tracks"]["items"]
+        playlist_tracks = sp.playlist_items(playlist)
+        playlist_tracks = playlist_tracks["items"]
         for track in playlist_tracks:
             track_uri = track["track"]["uri"]
             tracks.add(track_uri)
