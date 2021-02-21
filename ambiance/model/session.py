@@ -41,7 +41,7 @@ class Session(DataClassJsonMixin):
                     if track not in vibe_pool:
                         vibe_pool.append(track)
 
-            return average_features(vibe_pool)
+            return average_features(create_tracks(vibe_pool))
 
     def update_pool(self) -> None:
         new_pool = []
