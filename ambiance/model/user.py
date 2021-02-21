@@ -6,7 +6,8 @@ from dataclasses_json import DataClassJsonMixin
 from spotipy import Spotify
 from typing import List
 
-from ambiance.endpoint.helpers import top_tracks, track_features, saved_tracks
+
+from ambiance.helpers import top_tracks, track_features, saved_tracks
 from ambiance.feature_engine.features import average_features
 from ambiance.model.spotify_auth import Credentials
 from ambiance.model.track import Track

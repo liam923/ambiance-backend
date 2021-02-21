@@ -3,14 +3,14 @@ from typing import List
 
 import spotipy
 
-from ambiance.model.db import DB
+import ambiance.model.db as db
 
 scope = 'user-library-read'
 
 
 def get_saved_tracks(user_id: str) -> List[str]:
     response = []
-    sp = DB.users[user_id].spotipy
+    sp = db.DB.users[user_id].spotipy
 
     results = sp.current_user_saved_tracks()
     for item in results['items']:

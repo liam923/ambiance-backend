@@ -5,7 +5,7 @@ import uuid
 from dataclasses_json import DataClassJsonMixin
 
 from ambiance.endpoint.endpoint import endpoint, POST, PUT
-from ambiance.model.db import DB
+import ambiance.model.db as db
 from ambiance.model.session import Session
 
 
@@ -24,7 +24,7 @@ def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
     session_id = uuid.uuid4()
 
     # Update this user's preference
-    master_user = DB.users[user]
+    master_user = db.DB.users[user]
     master_user.update_preference()
     master_user.update_library()
 
@@ -34,7 +34,7 @@ def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
 
     DB.sessions.update(session_id, session)
 
-    return CreateOutput(session_id=session_id)
+    return CreateOutput(session_id=str(session_id))
 
 
 @dataclass
@@ -47,8 +47,9 @@ def join(body: JoinInput, user: str, **kwargs) -> None:
     session = DB.sessions[body.session_id]
     if user not in session.users:
         session.users.append(user)
+        session.update_pool()
 
-    DB.users[user].update()
+    db.DB.users[user].update()
 
 
 @dataclass
@@ -59,4 +60,4 @@ class UpdateInput(DataClassJsonMixin):
 
 @endpoint(method=PUT, body=JoinInput)
 def update(body: UpdateInput, **kwargs) -> None:
-    DB.sessions[body.session_id].change_vibe(body.vibe)
+    db.DB.sessions[body.session_id].change_vibe(body.vibe)
