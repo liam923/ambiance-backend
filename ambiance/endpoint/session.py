@@ -59,4 +59,4 @@ class UpdateInput(DataClassJsonMixin):
 
 @endpoint(method=PUT, body=JoinInput)
 def update(body: UpdateInput, **kwargs) -> None:
-    DB.sessions[UpdateInput.session_id].change_vibe(UpdateInput.vibe)
+    DB.sessions[body.session_id].change_vibe(body.vibe)
