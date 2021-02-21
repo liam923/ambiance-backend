@@ -12,3 +12,6 @@ class Track(DataClassJsonMixin):
     artists: List[str]
     features: np.ndarray
 
+    def __eq__(self, other):
+        return self.uri is other.uri
+
