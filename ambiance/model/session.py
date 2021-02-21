@@ -27,7 +27,7 @@ class Session(DataClassJsonMixin):
 
     processed_data: SessionData = field(default_factory=SessionData)
 
-    def vibe_check(self) -> np.ndarray:
+    def vibe_check(self) -> None:
         if self.vibe is not None:
             if "playlist" in self.vibe:
                 pass
@@ -41,7 +41,7 @@ class Session(DataClassJsonMixin):
                     if track not in vibe_pool:
                         vibe_pool.append(track)
 
-            return average_features(create_tracks(vibe_pool))
+            self.processed_data.vibe_feature_vector = average_features(create_tracks(vibe_pool))
 
     def update_pool(self) -> None:
         new_pool = set()
@@ -54,7 +54,8 @@ class Session(DataClassJsonMixin):
             for track in create_tracks(list(user_tracks)):
                 new_pool.add(track)
 
-        self.pool = rank_library(list(new_pool), self.vibe_check())
+        self.vibe_check()
+        self.pool = rank_library(list(new_pool), self.processed_data.vibe_feature_vector)
 
     def change_vibe(self, uri: str = None) -> None:
         self.vibe = uri
