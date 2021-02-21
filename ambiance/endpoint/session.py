@@ -32,6 +32,8 @@ def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
 
     session = Session(id=session_id, users=[user], name=username + "'s Party")
 
+    session.user_scale_map[user] = 0
+
     session.change_vibe(body.vibe)
 
     db.DB().sessions[session_id] = session
@@ -55,6 +57,7 @@ def join(body: JoinInput, user: str, **kwargs) -> JoinOutput:
     if user not in session.users:
         session.users.append(user)
         session.update_pool()
+        session.user_scale_map[user] = 0
 
     db.DB().users[user].update()
     return JoinOutput(body.session_id)

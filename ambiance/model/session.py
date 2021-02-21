@@ -1,5 +1,6 @@
+from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Set
+from typing import List, Dict, Optional, Set, DefaultDict
 
 import numpy as np
 from dataclasses_json import DataClassJsonMixin
@@ -12,6 +13,7 @@ from ambiance.model import db
 from ambiance.model.jukebox import Jukebox
 from ambiance.model.track import Track
 
+LIB_SIZE_SCALE_FACTOR = 1.0
 
 @dataclass
 class SessionData(DataClassJsonMixin):
@@ -27,6 +29,7 @@ class Session(DataClassJsonMixin):
     vibe: Optional[str] = None
     pool: List[Track] = field(default_factory=list)
     subscribed: Dict[str, str] = field(default_factory=dict)
+    user_scale_map: DefaultDict[str, float] = field(default_factory=defaultdict)
 
     processed_data: SessionData = field(default_factory=SessionData)
 
@@ -51,11 +54,27 @@ class Session(DataClassJsonMixin):
 
     def update_pool(self) -> None:
         library: Set[Track] = set()
+        users = db.DB().users
+        user_size = {}
         for user in self.users:
-            library |= db.DB().users[user].library
+            user_size[user] = len(users[user].library)
+
+        max_library_size = user_size[max(user_size, key=lambda x: user_size[x])]
+        user_scale_map = {user: ((size / max_library_size) * (1.0 / LIB_SIZE_SCALE_FACTOR)) for user, size in user_size}
+
+        scale_map = {}
+        for user in self.users:
+            library |= users[user].library
+
+            user_scale = user_scale_map[user]
+            for track in users[user].library:
+                if track.uri in scale_map:
+                    scale_map[track.uri] = user_scale if user_scale < scale_map[track.uri] else scale_map[track.uri]
+                else:
+                    scale_map[track.uri] = user_scale
 
         self.vibe_check()
-        self.pool = rank_library(library, self.processed_data.vibe_feature_vector)
+        self.pool = rank_library(library, self.processed_data.vibe_feature_vector, scale_map=scale_map)
 
         for jukebox in self.jukeboxes.values():
             jukebox.update_jukebox_queue()

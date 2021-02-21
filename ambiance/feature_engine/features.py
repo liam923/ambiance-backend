@@ -48,6 +48,6 @@ def euclidean_distance(
 
 
 def rank_library(
-    library: Iterable[Track], features: np.ndarray
+    library: Iterable[Track], features: np.ndarray, scale_map: Dict[str, float]
 ) -> List[Track]:
-    return sorted(library, key=lambda song: euclidean_distance(song.features, features))
+    return sorted(library, key=lambda song: euclidean_distance(song.features, features, scale=scale_map[song.uri]))
