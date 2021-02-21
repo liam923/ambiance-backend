@@ -10,7 +10,17 @@ import ambiance.model.db as db
 from ambiance.model.spotify_auth import Credentials
 from ambiance.model.user import User
 
-SCOPES = " ".join(["user-library-read", "playlist-modify-private", "user-top-read", "playlist-modify-public"])
+SCOPES = " ".join(
+    [
+        "user-library-read",
+        "playlist-modify-private",
+        "user-top-read",
+        "user-read-currently-playing",
+        "user-read-playback-state",
+        "user-modify-playback-state",
+        "playlist-modify-public",
+    ]
+)
 
 
 @endpoint(
@@ -38,6 +48,9 @@ def authorize(params: AuthorizeRequest, **kwargs) -> HttpResponseRedirect:
     sp = spotipy.Spotify(client_credentials_manager=credentials)
 
     db.DB().users[user_id] = User(credentials=credentials, id=user_id, spotipy=sp)
+    db.DB().users[user_id].update()
+    print(credentials.refresh_token)
+    print(credentials.access_token)
 
     return HttpResponseRedirect(redirect_url.url)
 
