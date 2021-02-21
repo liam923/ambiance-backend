@@ -32,7 +32,7 @@ class Session(DataClassJsonMixin):
             if "playlist" in self.vibe:
                 pass
             else:
-                return create_tracks([self.vibe])[0].features
+                self.processed_data.vibe_feature_vector = create_tracks([self.vibe])[0].features
         else:
             vibe_pool = []
             for user in self.users:
