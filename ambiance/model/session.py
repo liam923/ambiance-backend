@@ -1,14 +1,14 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Set
 
 import numpy as np
 from dataclasses_json import DataClassJsonMixin
 
 from ambiance.endpoint.playlist import update
 from ambiance.feature_engine.features import average_features, rank_library
-from ambiance.helpers import top_tracks, saved_tracks, playlist_tracks
 from ambiance.helpers.playlist_tracks import playlist_to_tracks, album_to_tracks
 from ambiance.helpers.track_features import create_tracks
+from ambiance.model import db
 from ambiance.model.jukebox import Jukebox
 from ambiance.model.track import Track
 
@@ -38,30 +38,25 @@ class Session(DataClassJsonMixin):
             elif "album" in self.vibe:
                 album_to_tracks(self.users[0], self.vibe)
             else:
-                self.processed_data.vibe_feature_vector = create_tracks([self.vibe])[0].features
+                self.processed_data.vibe_feature_vector = create_tracks([self.vibe])[
+                    0
+                ].features
         else:
             vibe_pool = []
             for user in self.users:
-                user_top_tracks = top_tracks.get_top_tracks(user)
-                for track in user_top_tracks:
+                for track in db.DB().users[user].top_tracks:
                     if track not in vibe_pool:
                         vibe_pool.append(track)
 
-            self.processed_data.vibe_feature_vector = average_features(create_tracks(vibe_pool))
+            self.processed_data.vibe_feature_vector = average_features(vibe_pool)
 
     def update_pool(self) -> None:
-        new_pool = set()
-
+        library: Set[Track] = set()
         for user in self.users:
-            user_tracks = set()
-            user_tracks.update(saved_tracks.get_saved_tracks(user))
-            user_tracks.update(playlist_tracks.get_playlist_tracks(user))
-            user_tracks.update(top_tracks.get_top_tracks(user))
-            for track in create_tracks(list(user_tracks)):
-                new_pool.add(track)
+            library |= db.DB().users[user].library
 
         self.vibe_check()
-        self.pool = rank_library(list(new_pool), self.processed_data.vibe_feature_vector)
+        self.pool = rank_library(library, self.processed_data.vibe_feature_vector)
 
         for jukebox in self.jukeboxes.values():
             jukebox.update_jukebox_queue()
@@ -69,7 +64,6 @@ class Session(DataClassJsonMixin):
         if self.live:
             for user in self.subscribed:
                 update(user, self.id)
-
 
     def change_vibe(self, uri: str = None) -> None:
         self.vibe = uri
