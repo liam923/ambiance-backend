@@ -2,7 +2,7 @@
 
 Service that interacts with Spotify API, pulls user data such as top tracks, saved tracks, and playlists to intelligently curating a ranked list of songs for a user or a group of users.
 
-A user, or users, can now play this list, with our service automatically queueing more songs in the Spotify app, and always keeping a low amount in the queue (to allow the user to easily queue any songs he might want to).
+A user, or users, can now play this list, with our service automatically queueing more songs in the Spotify app, and always keeping a low amount in the queue (to allow the user to easily queue any songs he/she might want to).
 
 A user can extract the list to a playlist in Spotify.
 
