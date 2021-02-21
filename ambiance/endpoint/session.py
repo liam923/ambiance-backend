@@ -27,8 +27,7 @@ def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
 
     # Update this user's preference
     master_user = db.DB().users[user]
-    master_user.update_preference()
-    master_user.update_library()
+    master_user.update()
 
     username = user_info.get_user(user)['display_name']
 

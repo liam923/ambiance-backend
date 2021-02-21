@@ -28,7 +28,7 @@ class CreatePlaylistOutput:
 def create(body: CreatePlaylistInput, user: str, **kwargs) -> CreatePlaylistOutput:
     db_inst = db.DB()
     # instantiates spotipy
-    sp = db.users[user].spotipy
+    sp = db.DB().users[user].spotipy
     # creates list of song uris
     uri_list = [track.uri for track in db_inst.sessions[body.session_id].pool]
     # if there is no playlist name passed

@@ -1,5 +1,5 @@
 # Shows a user's saved tracks (need to be authenticated via oauth)
-from typing import List
+from typing import Set
 
 import spotipy
 
@@ -8,7 +8,7 @@ import ambiance.model.db as db
 scope = 'user-library-read'
 
 
-def get_saved_tracks(user_id: str) -> List[str]:
+def get_saved_tracks(user_id: str) -> Set[str]:
     response = set()
     sp = db.DB().users[user_id].spotipy
 
@@ -21,7 +21,7 @@ def get_saved_tracks(user_id: str) -> List[str]:
         for item in results['items']:
             response.add(item['track']['uri'])
 
-    return list(response)
+    return response
 
 
 # demo
