@@ -8,6 +8,7 @@ import ambiance.endpoint.auth as auth
 import ambiance.endpoint.playlist as playlist
 import ambiance.endpoint.user_info as user_info
 import ambiance.endpoint.jukebox as jukebox
+from ambiance.endpoint import search
 
 DEBUG = True
 SECRET_KEY = "peepeepoopoojizzjazz"
@@ -31,4 +32,5 @@ urlpatterns = [
     url(r"^user/info/?$", user_info.get_user),
     url(r"^jukebox/start/?$", jukebox.start),
     url(r"^jukebox/stop/?$", jukebox.stop),
+    url(r"^spotify/search/?$", search.search),
 ]
