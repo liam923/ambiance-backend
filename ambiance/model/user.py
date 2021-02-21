@@ -21,7 +21,7 @@ class User(DataClassJsonMixin):
     pref: np.ndarray = field(default_factory=lambda : np.array([]))
 
     def __post_init__(self):
-        self.spotipy = spotipy.Spotify(client_credentials_manager=self.credentials)
+        self.spotipy = spotipy.Spotify(auth_manager=self.credentials)
         self.update()
 
     def update(self):

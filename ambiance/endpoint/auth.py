@@ -10,7 +10,7 @@ import ambiance.model.db as db
 from ambiance.model.spotify_auth import Credentials
 from ambiance.model.user import User
 
-SCOPES = " ".join(["user-library-read", "playlist-modify-private", "user-top-read"])
+SCOPES = " ".join(["user-library-read", "playlist-modify-private", "user-top-read", "playlist-modify-public"])
 
 
 @endpoint(
