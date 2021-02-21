@@ -22,7 +22,6 @@ class _DataBase(DataClassJsonMixin):
 
 
 if PERSISTENT_DB.exists():
-    # DB = _DataBase.from_json(PERSISTENT_DB.read_text())
-    DB = _DataBase()
+    DB = _DataBase.from_json(PERSISTENT_DB.read_text())
 else:
     DB = _DataBase()

@@ -32,7 +32,7 @@ def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
 
     session.change_vibe(body.vibe)
 
-    DB.sessions.update(session_id, session)
+    db.DB.sessions.update(session_id, session)
 
     return CreateOutput(session_id=str(session_id))
 
@@ -44,7 +44,7 @@ class JoinInput(DataClassJsonMixin):
 
 @endpoint(method=PUT, body=JoinInput)
 def join(body: JoinInput, user: str, **kwargs) -> None:
-    session = DB.sessions[body.session_id]
+    session = db.DB.sessions[body.session_id]
     if user not in session.users:
         session.users.append(user)
         session.update_pool()
