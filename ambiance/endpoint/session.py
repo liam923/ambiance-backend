@@ -1,3 +1,5 @@
+import random
+import string
 from dataclasses import dataclass
 from typing import Optional
 import uuid
@@ -22,7 +24,7 @@ class CreateOutput(DataClassJsonMixin):
 
 @endpoint(method=POST, body=CreateInput)
 def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
-    session_id = str(uuid.uuid4())
+    session_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
 
     # Update this user's preference
     master_user = db.DB().users[user]
