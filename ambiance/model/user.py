@@ -46,4 +46,4 @@ class User(DataClassJsonMixin):
 
         self.pref = average_features(all_tracks.values())
         self.library = self.saved_tracks | self.playlist_tracks | self.top_tracks
-        print("Library updated. New size: %")
+        print("{0}'s library updated. New size: {1}".format(self.spotipy.me()["display_name"], len(self.library)))
