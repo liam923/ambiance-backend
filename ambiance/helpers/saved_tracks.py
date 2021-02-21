@@ -9,19 +9,19 @@ scope = 'user-library-read'
 
 
 def get_saved_tracks(user_id: str) -> List[str]:
-    response = []
+    response = set()
     sp = db.DB().users[user_id].spotipy
 
     results = sp.current_user_saved_tracks()
     for item in results['items']:
-        response.append(item['track']['uri'])
+        response.add(item['track']['uri'])
 
     while results['next']:
         results = sp.next(results)
         for item in results['items']:
-            response.append(item['track']['uri'])
+            response.add(item['track']['uri'])
 
-    return response
+    return list(response)
 
 
 # demo
