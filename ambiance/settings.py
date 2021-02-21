@@ -1,7 +1,7 @@
 import socket
 
 from django.conf.urls import url
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, JsonResponse, HttpResponseRedirect
 
 from ambiance.endpoint import session, auth
 
@@ -13,6 +13,8 @@ ROOT_URLCONF = __name__
 def home(request: HttpRequest) -> JsonResponse:
     return JsonResponse({"message": "Hello world."})
 
+
+HttpResponseRedirect.allowed_schemes.append("exp")
 
 urlpatterns = [
     url(r"^$", home),
