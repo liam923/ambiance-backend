@@ -57,6 +57,9 @@ class Session(DataClassJsonMixin):
         self.vibe_check()
         self.pool = rank_library(list(new_pool), self.processed_data.vibe_feature_vector)
 
+        for jukebox in self.jukeboxes.values():
+            jukebox.update_jukebox_queue()
+
     def change_vibe(self, uri: str = None) -> None:
         self.vibe = uri
         self.update_pool()

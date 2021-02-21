@@ -28,7 +28,7 @@ def start(body: StartJukeboxRequest, user: str, **kwargs) -> StartJukeboxRespons
         jukebox = db.DB().sessions[body.session_id].jukeboxes[body.jukebox_id]
     else:
         jukebox_id = str(uuid.uuid4())
-        jukebox = Jukebox(id=jukebox_id, user_id=user)
+        jukebox = Jukebox(id=jukebox_id, user_id=user, session_id=body.session_id)
 
     for jukebox in db.DB().sessions[body.session_id].jukeboxes.values():
         if jukebox.user_id == user and jukebox.active:
