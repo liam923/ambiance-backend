@@ -43,7 +43,7 @@ def album_to_tracks(user_id:str, album_uri: str) -> List[str]:
     tracks = set()
     album_tracks = sp.album_tracks(album_id=album_uri)
     for track in album_tracks['items']:
-        tracks.add(track["track"]["uri"])
+        tracks.add(track["uri"])
     return list(tracks)
 
 
