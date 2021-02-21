@@ -1,24 +1,21 @@
-from dataclasses import field, dataclass
-from typing import List, Optional
+from dataclasses import dataclass
+from typing import Optional
 import uuid
 
-from dataclasses_json import dataclass_json
+from dataclasses_json import DataClassJsonMixin
 
 from ambiance.endpoint.endpoint import endpoint, POST, PUT
-from ambiance.endpoint.endpoint import endpoint, POST
 from ambiance.model.db import DB
 from ambiance.model.session import Session
 
 
-@dataclass_json
 @dataclass
-class CreateInput:
+class CreateInput(DataClassJsonMixin):
     vibe: Optional[str] = None
 
 
-@dataclass_json
 @dataclass
-class CreateOutput:
+class CreateOutput(DataClassJsonMixin):
     session_id: str
 
 
@@ -33,19 +30,15 @@ def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
 
     session = Session(id=session_id, users=[user], pool=master_user.library)
 
-    if body.vibes is None:
-        session.change_vibe()
-    else:
-        session.change_vibe(body.vibe)
+    session.change_vibe(body.vibe)
 
     DB.sessions.update(session_id, session)
 
     return CreateOutput(session_id=session_id)
 
 
-@dataclass_json
 @dataclass
-class JoinInput:
+class JoinInput(DataClassJsonMixin):
     session_id: str
 
 
@@ -58,9 +51,8 @@ def join(body: JoinInput, user: str, **kwargs) -> None:
     DB.users[user].update()
 
 
-@dataclass_json
 @dataclass
-class UpdateInput:
+class UpdateInput(DataClassJsonMixin):
     session_id: str
     vibe: str
 
