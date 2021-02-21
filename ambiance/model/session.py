@@ -28,7 +28,7 @@ class Session(DataClassJsonMixin):
     jukeboxes: Dict[str, Jukebox] = field(default_factory=dict)
     vibe: Optional[str] = None
     pool: List[Track] = field(default_factory=list)
-    live: bool = True
+    live: bool = False
     subscribed: Dict[str, str] = field(default_factory=dict)
     user_scale_map: DefaultDict[str, float] = field(default_factory=defaultdict)
 
