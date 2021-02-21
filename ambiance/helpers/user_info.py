@@ -1,8 +1,13 @@
+from typing import Tuple
+
+from django.http import JsonResponse
+
+from ambiance.model import db
 
 
-def get_user_name(user_id: str) -> str:
-    return ""
+def get_user(user_id: str) -> Tuple[str, str]:
+    sp = db.DB.users[user_id].spotipy
+    return sp.me()
 
 
-def get_user_image(user_id: str) -> str:
-    return ""
+print(get_user(""))

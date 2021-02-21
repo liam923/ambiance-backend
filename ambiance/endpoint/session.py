@@ -28,7 +28,7 @@ def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
     master_user.update_preference()
     master_user.update_library()
 
-    session = Session(id=session_id, users=[user], pool=master_user.library)
+    session = Session(id=session_id, users=[user])
 
     session.change_vibe(body.vibe)
 
