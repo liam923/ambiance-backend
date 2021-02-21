@@ -1,11 +1,11 @@
 import json
 from typing import List
 
-from ambiance.model.db import DB
+import ambiance.model.db as db
 
 
 def get_playlist_tracks(user_id: str) -> List[str]:
-    sp = DB.users[user_id].spotipy
+    sp = db.DB().users[user_id].spotipy
 
     user_playlists = [playlist["uri"] for playlist in sp.user_playlists(user_id)["items"]]
     tracks = set()
