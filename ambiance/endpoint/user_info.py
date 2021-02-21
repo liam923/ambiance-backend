@@ -20,5 +20,5 @@ class GetUserOutput(DataClassJsonMixin):
 def get_user(params: GetUserInput, user: str, **kwargs) -> GetUserOutput:
     info = user_info.get_user(user)
     name = info["display_name"]
-    image = info['images']['url']
+    image = info['images'][0]['url']
     return GetUserOutput(name=name, image_url=image)
