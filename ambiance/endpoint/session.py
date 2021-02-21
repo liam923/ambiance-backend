@@ -45,14 +45,20 @@ class JoinInput(DataClassJsonMixin):
     session_id: str
 
 
+@dataclass
+class JoinOutput(DataClassJsonMixin):
+    session_id: str
+
+
 @endpoint(method=PUT, body=JoinInput)
-def join(body: JoinInput, user: str, **kwargs) -> None:
+def join(body: JoinInput, user: str, **kwargs) -> JoinOutput:
     session = db.DB().sessions[body.session_id]
     if user not in session.users:
         session.users.append(user)
         session.update_pool()
 
     db.DB().users[user].update()
+    return JoinOutput(body.session_id)
 
 
 @dataclass
@@ -61,6 +67,12 @@ class UpdateInput(DataClassJsonMixin):
     vibe: str
 
 
-@endpoint(method=PUT, body=JoinInput)
-def update(body: UpdateInput, **kwargs) -> None:
+@dataclass
+class UpdateOutput(DataClassJsonMixin):
+    session_id: str
+
+
+@endpoint(method=PUT, body=UpdateInput)
+def update(body: UpdateInput, **kwargs) -> UpdateOutput:
     db.DB().sessions[body.session_id].change_vibe(body.vibe)
+    return UpdateOutput(body.session_id)

@@ -24,7 +24,7 @@ urlpatterns = [
     url(r"^session/update/?$", session.update),
     url(r"^session/join/?$", session.join),
     url(r"^playlist/create/?$", playlist.create),
-    url(r"^user/get/?$", user_info.get_user),
+    url(r"^user/info/?$", user_info.get_user),
     url(r"^jukebox/start/?$", jukebox.start),
     url(r"^jukebox/stop/?$", jukebox.stop),
 ]
