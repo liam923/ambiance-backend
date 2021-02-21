@@ -47,16 +47,11 @@ class Session(DataClassJsonMixin):
         new_pool = set()
 
         for user in self.users:
-            user_saved_songs = create_tracks(saved_tracks.get_saved_tracks(user))
-            for track in user_saved_songs:
-                new_pool.add(track)
-
-            user_playlist_songs = create_tracks(playlist_tracks.get_playlist_tracks(user))
-            for track in user_playlist_songs:
-                new_pool.add(track)
-
-            user_top_songs = create_tracks(top_tracks.get_top_tracks(user))
-            for track in user_top_songs:
+            user_tracks = set()
+            user_tracks.update(saved_tracks.get_saved_tracks(user))
+            user_tracks.update(playlist_tracks.get_playlist_tracks(user))
+            user_tracks.update(top_tracks.get_top_tracks(user))
+            for track in create_tracks(list(user_tracks)):
                 new_pool.add(track)
 
         self.pool = rank_library(list(new_pool), self.vibe_check())
