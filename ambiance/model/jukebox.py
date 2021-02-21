@@ -1,5 +1,7 @@
+import threading
 from dataclasses import dataclass
 from threading import Timer
+from time import sleep
 from typing import Optional
 
 import spotipy
@@ -7,7 +9,22 @@ from dataclasses_json import DataClassJsonMixin
 import ambiance.model.db as db
 
 
-REFRESH_RATE = 5.0
+REFRESH_RATE = 1.0
+
+
+def _update_queue(jukebox: "Jukebox"):
+    while jukebox.active:
+        if jukebox._last_queued is None:
+            jukebox._add_to_queue()
+
+        playback = jukebox._sp().current_playback()
+
+        if playback is None:
+            jukebox.active = False
+        elif playback["item"]["uri"] == jukebox._last_queued:
+            jukebox._add_to_queue()
+
+        sleep(REFRESH_RATE)
 
 
 @dataclass
@@ -19,36 +36,33 @@ class Jukebox(DataClassJsonMixin):
     def __post_init__(self):
         self._timer: Optional[Timer] = None
         self._i = 0
+        self._last_queued: Optional[str] = None
 
     # instantiates the spotipy instance
     def _sp(self) -> spotipy.Spotify:
         return db.DB().users[self.user_id].spotipy
 
     # starts the function that checks whether the song is ending
-    def start(self):
-        timer = Timer(0.0, lambda: self._update_queue())
-        timer.start()
-        self._timer = timer
+    def start(self) -> bool:
+        print(self._sp().current_playback())
+        if self._sp().current_playback() is None:
+            return False
+        else:
+            self.active = True
+            self._thread = threading.Thread(target=_update_queue, args=(self,))
+            self._thread.start()
 
-    #  Adds to the queue if there is less than 5 seconds left in the song – every REFRESH_RATE seconds recurs
-    def _update_queue(self):
-        self._timer = Timer(REFRESH_RATE, lambda: self._update_queue())
-        self._timer.start()
-
-        playback = self._sp().current_playback()
-        time_left = playback["item"]["duration_ms"] - playback["progress_ms"] if playback else 0
-
-        if time_left <= REFRESH_RATE * 1000:
-            self._add_to_queue()
+            return True
 
     def stop(self):
         if self._timer is not None:
-            self._timer.cancel()
+            self.active = False
 
     def _add_to_queue(self) -> str:
-        new_song = self._next_song()
-        db.DB().users[self.user_id].spotipy.add_to_queue(new_song)
-        return new_song
+        self._last_queued = self._next_song()
+
+        db.DB().users[self.user_id].spotipy.add_to_queue(self._last_queued)
+        return self._last_queued
 
     def _next_song(self) -> str:
         songs = [
