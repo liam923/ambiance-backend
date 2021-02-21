@@ -60,6 +60,7 @@ class Session(DataClassJsonMixin):
             user_size[user] = len(users[user].library)
 
         max_library_size = user_size[max(user_size, key=lambda x: user_size[x])]
+        print("Max library size: {0}".format(max_library_size))
         user_scale_map = {user: ((size / max_library_size) * (1.0 / LIB_SIZE_SCALE_FACTOR))
                           for (user, size) in user_size.items()}
 
