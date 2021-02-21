@@ -3,7 +3,11 @@ import socket
 from django.conf.urls import url
 from django.http import HttpRequest, JsonResponse, HttpResponseRedirect
 
-from ambiance.endpoint import session, auth, playlist, user_info, jukebox
+import ambiance.endpoint.session as session
+import ambiance.endpoint.auth as auth
+import ambiance.endpoint.playlist as playlist
+import ambiance.endpoint.user_info as user_info
+import ambiance.endpoint.jukebox as jukebox
 
 DEBUG = True
 SECRET_KEY = "peepeepoopoojizzjazz"

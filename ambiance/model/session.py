@@ -7,7 +7,7 @@ from dataclasses_json import DataClassJsonMixin
 from ambiance.endpoint.playlist import update
 from ambiance.feature_engine.features import average_features, rank_library
 from ambiance.helpers import top_tracks, saved_tracks, playlist_tracks
-from ambiance.helpers.playlist_tracks import playlist_to_tracks
+from ambiance.helpers.playlist_tracks import playlist_to_tracks, album_to_tracks
 from ambiance.helpers.track_features import create_tracks
 from ambiance.model.jukebox import Jukebox
 from ambiance.model.track import Track
@@ -36,7 +36,7 @@ class Session(DataClassJsonMixin):
             if "playlist" in self.vibe:
                 playlist_to_tracks(self.users[0], self.vibe)
             elif "album" in self.vibe:
-                pass
+                album_to_tracks(self.users[0], self.vibe)
             else:
                 self.processed_data.vibe_feature_vector = create_tracks([self.vibe])[0].features
         else:
