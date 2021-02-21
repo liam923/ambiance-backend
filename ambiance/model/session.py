@@ -13,7 +13,7 @@ import ambiance.model.db as db
 from ambiance.model.jukebox import Jukebox
 from ambiance.model.track import Track
 
-LIB_SIZE_SCALE_FACTOR = 1.0
+LIB_SIZE_SCALE_FACTOR = 0.5
 
 @dataclass
 class SessionData(DataClassJsonMixin):
@@ -60,15 +60,21 @@ class Session(DataClassJsonMixin):
             user_size[user] = len(users[user].library)
 
         max_library_size = user_size[max(user_size, key=lambda x: user_size[x])]
-        user_scale_map = {user: ((size / max_library_size) * (1.0 / LIB_SIZE_SCALE_FACTOR))
+        # print("Max library size: {0}".format(max_library_size))
+        user_scale_map = {user: ((size + max_library_size * LIB_SIZE_SCALE_FACTOR)
+                                 / (max_library_size + max_library_size * LIB_SIZE_SCALE_FACTOR))
                           for (user, size) in user_size.items()}
 
         for user in user_scale_map:
-            print("{0}: {1}".format(users[user].spotipy.me()["display_name"], user_scale_map[user]))
+            if user_scale_map[user] > 1.0:
+                user_scale_map[user] = 1.0
+            # print("{0}: {1}".format(users[user].spotipy.me()["display_name"], user_scale_map[user]))
 
         scale_map = {}
         for user in self.users:
+            init_len = len(library)
             library |= users[user].library
+            # print("Library: {0} -> {1}".format(init_len, len(library)))
 
             user_scale = user_scale_map[user]
             for track in users[user].library:

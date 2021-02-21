@@ -55,11 +55,11 @@ class JoinOutput(DataClassJsonMixin):
 def join(body: JoinInput, user: str, **kwargs) -> JoinOutput:
     session = db.DB().sessions[body.session_id]
     if user not in session.users:
+        db.DB().users[user].update()
         session.users.append(user)
         session.update_pool()
         session.user_scale_map[user] = 0
 
-    db.DB().users[user].update()
     return JoinOutput(body.session_id)
 
 

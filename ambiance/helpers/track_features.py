@@ -34,7 +34,7 @@ def create_tracks(tracks: Collection[str]) -> Set[Track]:
     pool = Pool()
 
     feature_results = pool.map(_process_feature, ((sublist, sp) for sublist in tracks))
-    print(f"Track info time: {pendulum.now()}")
+    # print(f"Track info time: {pendulum.now()}")
     track_info_results = pool.map(_process_track_info, ((sublist, sp) for sublist in tracks))
 
     res = set()
