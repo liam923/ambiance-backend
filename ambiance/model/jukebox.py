@@ -46,12 +46,7 @@ class Jukebox(DataClassJsonMixin):
     def update_jukebox_queue(self):
         self._suggested_songs = [
             track.uri
-            for track in rank_library(
-                library=db.DB().sessions[self.session_id].pool,
-                features=db.DB()
-                .sessions[self.session_id]
-                .processed_data.vibe_feature_vector,
-            )
+            for track in db.DB().sessions[self.session_id].pool
         ]
         self._queue: List[str] = list(reversed(self._suggested_songs))
 
