@@ -3,7 +3,7 @@ import socket
 from django.conf.urls import url
 from django.http import HttpRequest, JsonResponse, HttpResponseRedirect
 
-from ambiance.endpoint import session, auth, playlist, user_info
+from ambiance.endpoint import session, auth, playlist, user_info, jukebox
 
 DEBUG = True
 SECRET_KEY = "peepeepoopoojizzjazz"
@@ -24,5 +24,7 @@ urlpatterns = [
     url(r"^session/update/?$", session.update),
     url(r"^session/join/?$", session.join),
     url(r"^playlist/create/?$", playlist.create),
-    url(r"^user/get$", user_info.get_user),
+    url(r"^user/get/?$", user_info.get_user),
+    url(r"^jukebox/start/?$", jukebox.start),
+    url(r"^jukebox/stop/?$", jukebox.stop),
 ]
