@@ -8,7 +8,7 @@ from dataclasses_json import DataClassJsonMixin
 import ambiance.model.db as db
 
 REFRESH_RATE = 1.0
-MODULAR_WALK_CYLCE = 7
+MODULAR_WALK_CYCLE = 7
 
 
 def _update_user_queue(jukebox: "Jukebox", active):
@@ -52,14 +52,14 @@ class Jukebox(DataClassJsonMixin):
 
     def _resort_tracks(self, tracks: List[str]) -> List[str]:
         new_tracks = []
-        for offset in range(0, MODULAR_WALK_CYLCE):
+        for offset in range(0, MODULAR_WALK_CYCLE):
             step = 0
             i = offset
             while i < len(new_tracks):
                 new_tracks.append(tracks[i])
 
                 step += 1
-                i = offset + (step * MODULAR_WALK_CYLCE)
+                i = offset + (step * MODULAR_WALK_CYCLE)
         return new_tracks
 
     # instantiates the spotipy instance
@@ -72,7 +72,7 @@ class Jukebox(DataClassJsonMixin):
             return False
         else:
             self.active = True
-            self._thread = threading.Thread(target=_update_user_queue, args=(self, lambda : self.active))
+            self._thread = threading.Thread(target=_update_user_queue, args=(self, lambda: self.active))
             self._thread.start()
 
             return True

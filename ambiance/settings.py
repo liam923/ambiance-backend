@@ -11,7 +11,7 @@ import ambiance.endpoint.jukebox as jukebox
 from ambiance.endpoint import search
 
 DEBUG = True
-SECRET_KEY = "peepeepoopoojizzjazz"
+SECRET_KEY = "averysecretandimpossibletoguesskey"
 ROOT_URLCONF = __name__
 
 

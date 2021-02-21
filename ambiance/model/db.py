@@ -1,8 +1,7 @@
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from threading import Lock
-from typing import Dict, Optional
+from typing import Dict
 
 import spotipy
 from dataclasses_json import DataClassJsonMixin
@@ -25,17 +24,6 @@ class _DataBase(DataClassJsonMixin):
             user.spotipy = None
         PERSISTENT_DB.write_text(self.to_json())
 
-
-# if PERSISTENT_DB.exists():
-#     d = json.loads(PERSISTENT_DB.read_text())
-#
-#     _db = _DataBase()
-#     _db.users = {u["id"]: User(id=u["id"], credentials=Credentials.from_dict(u["credentials"])) for u in
-#                  d["users"].values()}
-# else:
-#     _db = _DataBase()
-
-
 CLIENT_CREDENTIALS = spotipy.SpotifyClientCredentials(
     client_id=spotify.CLIENT_ID, client_secret=spotify.CLIENT_SECRET
 )
@@ -57,7 +45,6 @@ def DB() -> _DataBase:
                 user = User(id=u["id"], credentials=Credentials.from_dict(u["credentials"]))
                 _db.users[user.id] = user
 
-            # _db.users = {u["id"]: User(id=u["id"], credentials=Credentials.from_dict(u["credentials"])) for u in d["users"].values()}
         else:
             _db = _DataBase()
     return _db

@@ -15,6 +15,3 @@ def get_top_tracks(user_id: str, limit: int = 100) -> Set[str]:
             response.append(item['uri'])
     return set(response)
 
-
-# demo
-# print(get_top_tracks(limit=2))

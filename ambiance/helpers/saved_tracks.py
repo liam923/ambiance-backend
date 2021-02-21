@@ -30,6 +30,3 @@ def get_saved_tracks(user_id: str) -> Set[str]:
     map_res = pool.map(_process, ((x, sp) for x in range(1, total // LIMIT + 1)))
     return {uri for uris in map_res for uri in uris} | response
 
-
-# demo
-# print(get_saved_tracks())
