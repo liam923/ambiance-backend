@@ -17,6 +17,7 @@ class StartJukeboxRequest(DataClassJsonMixin):
 
 @dataclass
 class StartJukeboxResponse(DataClassJsonMixin):
+    session_id: str
     jukebox_id: str
     jukebox_exists: bool
 
@@ -38,7 +39,7 @@ def start(body: StartJukeboxRequest, user: str, **kwargs) -> StartJukeboxRespons
     if not jukebox.start():
         raise Error(406)
 
-    return StartJukeboxResponse(jukebox_id, jukebox_exists=False)
+    return StartJukeboxResponse(body.session_id, jukebox_id, jukebox_exists=False)
 
 
 @dataclass
@@ -49,6 +50,7 @@ class StopJukeboxRequest(DataClassJsonMixin):
 
 @dataclass
 class StopJukeboxResponse(DataClassJsonMixin):
+    session_id: str
     success: bool
 
 
@@ -57,4 +59,4 @@ def stop(body: StopJukeboxRequest, user: str, **kwargs) -> StopJukeboxResponse:
     jukebox = db.DB().sessions[body.session_id].jukeboxes[body.jukebox_id]
     jukebox.stop()
 
-    return StopJukeboxResponse(True)
+    return StopJukeboxResponse(body.session_id, True)
