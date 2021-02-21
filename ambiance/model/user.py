@@ -46,3 +46,4 @@ class User(DataClassJsonMixin):
 
         self.pref = average_features(all_tracks.values())
         self.library = self.saved_tracks | self.playlist_tracks | self.top_tracks
+        print("Library updated. New size: %")

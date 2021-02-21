@@ -13,7 +13,7 @@ from ambiance.model import db
 from ambiance.model.jukebox import Jukebox
 from ambiance.model.track import Track
 
-LIB_SIZE_SCALE_FACTOR = 1.0
+LIB_SIZE_SCALE_FACTOR = 1000000
 
 @dataclass
 class SessionData(DataClassJsonMixin):
@@ -60,7 +60,8 @@ class Session(DataClassJsonMixin):
             user_size[user] = len(users[user].library)
 
         max_library_size = user_size[max(user_size, key=lambda x: user_size[x])]
-        user_scale_map = {user: ((size / max_library_size) * (1.0 / LIB_SIZE_SCALE_FACTOR)) for user, size in user_size}
+        user_scale_map = {user: ((size / max_library_size) * (1.0 / LIB_SIZE_SCALE_FACTOR))
+                          for (user, size) in user_size.items()}
 
         scale_map = {}
         for user in self.users:
