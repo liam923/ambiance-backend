@@ -10,4 +10,4 @@ def get_user(user_id: str) -> Tuple[str, str]:
     return sp.me()
 
 
-# print(get_user(""))
+# print(get_user())
