@@ -1,20 +1,21 @@
 import threading
 from dataclasses import dataclass
-from threading import Timer
 from time import sleep
 from typing import Optional, List
 
 import spotipy
 from dataclasses_json import DataClassJsonMixin
 import ambiance.model.db as db
-from ambiance.feature_engine.features import rank_library
 
 REFRESH_RATE = 1.0
 MODULAR_WALK_CYLCE = 7
 
 
-def _update_user_queue(jukebox: "Jukebox"):
+def _update_user_queue(jukebox: "Jukebox", active):
     while jukebox.active:
+        if not active:
+            break
+
         if jukebox._last_queued is None:
             jukebox._add_to_queue()
 
@@ -36,7 +37,6 @@ class Jukebox(DataClassJsonMixin):
     active: bool = False
 
     def __post_init__(self):
-        self._timer: Optional[Timer] = None
         self._i = 0
         self._last_queued: Optional[str] = None
         self._previously_queued_songs = set()
@@ -72,13 +72,13 @@ class Jukebox(DataClassJsonMixin):
             return False
         else:
             self.active = True
-            self._thread = threading.Thread(target=_update_user_queue, args=(self,))
+            self._thread = threading.Thread(target=_update_user_queue, args=(self, lambda : self.active))
             self._thread.start()
 
             return True
 
     def stop(self):
-        if self._timer is not None:
+        if self._thread is not None:
             self.active = False
 
     def _add_to_queue(self) -> Optional[str]:
@@ -105,7 +105,7 @@ class Jukebox(DataClassJsonMixin):
 
     def __del__(self):
         try:
-            if self._timer is not None:
-                self._timer.cancel()
+            if self._thread is not None:
+                self.active = False
         except AttributeError:
             pass
