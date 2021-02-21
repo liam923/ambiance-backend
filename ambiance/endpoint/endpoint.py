@@ -5,6 +5,7 @@ from django.http import HttpRequest, JsonResponse, Http404, HttpResponse
 
 from ambiance.auth import token
 from ambiance.model.error import Error, ErrorMessage
+import ambiance.model.db as db
 
 GET = "GET"
 POST = "POST"
@@ -63,6 +64,8 @@ def endpoint(
                 user_id = None
                 if "User-Token" in request.headers:
                     user_id = token.verify(request.headers["User-Token"])
+                    if user_id not in db.DB().users:
+                        user_id = None
 
                 if user_id is None and auth_required:
                     return Error(status_code=401).as_response()
