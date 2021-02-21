@@ -3,7 +3,7 @@ from typing import List
 import ambiance.model.db as db
 
 
-def get_top_tracks(user_id: str, limit: int = 50) -> List[str]:
+def get_top_tracks(user_id: str, limit: int = 100) -> List[str]:
     response = []
     sp = db.DB().users[user_id].spotipy
 

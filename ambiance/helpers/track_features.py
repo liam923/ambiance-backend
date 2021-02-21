@@ -14,14 +14,24 @@ def create_tracks(tracks: List[str]) -> List[Track]:
     sp = db.CLIENT_SPOTIPY
     sp.trace = True
 
-    tracks = [track for track in tracks if track][:50]
+    tracks = list(chunks([track for track in tracks if track], 50))
 
-    features = sorted((track for track in sp.audio_features(tracks) if track), key=lambda track: track["id"])
-    track_info = sorted((track for track in sp.tracks(tracks)['tracks'] if track), key=lambda track: track["id"])
+    features = []
+    track_info = []
+    for sublist in tracks:
+        sublist = [track for track in sublist if ":local:" not in track]
+        features.extend(track for track in sp.audio_features(sublist) if track)
+        track_info.extend(track for track in sp.tracks(sublist)['tracks'] if track)
+
+    features = sorted(features, key=lambda track: track["id"])
+    track_info = sorted(track_info, key=lambda track: track["id"])
 
     return [vectorize_features(track, info) for track, info in zip(features, track_info)]
 
 
+def chunks(lst, n):
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
 
 # demo
 # print(get_tracks_features(['spotify:track:5TXDeTFVRVY7Cvt0Dw4vWW', 'spotify:track:2S2od3hT7ceytw7d1pTRuE']))

@@ -7,27 +7,26 @@ from ambiance.model.track import Track
 
 
 def vectorize_features(song: Dict[str, Any], track_info: Dict[str, Any]) -> Track:
+    raw = [
+        song["danceability"],
+        song["energy"],
+        -song["loudness"],
+        song["acousticness"],
+        song["valence"],
+        song["tempo"],
+    ]
+    raw_max = max(raw)
+    raw_min = min(raw)
+
     features = np.array(
-            [
-                song["danceability"],
-                song["energy"],
-                song["key"],
-                song["loudness"],
-                song["mode"],
-                song["speechiness"],
-                song["acousticness"],
-                song["instrumentalness"],
-                song["liveness"],
-                song["valence"],
-                song["tempo"],
-            ]
+            [((x - raw_min) / (raw_max - raw_min)) for x in raw]
         )
 
     return Track(song["uri"], track_info["name"], [artist["name"] for artist in track_info["artists"]], features)
 
 
 def average_features(library: List[Track]) -> np.ndarray:
-    feature_sum = np.zeros(11)
+    feature_sum = np.zeros(6)
 
     feature_count = 0.0
 
