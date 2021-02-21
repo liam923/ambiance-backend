@@ -6,6 +6,7 @@ from dataclasses_json import DataClassJsonMixin
 
 from ambiance.endpoint.endpoint import endpoint, POST, PUT
 import ambiance.model.db as db
+from ambiance.helpers import user_info
 from ambiance.model.session import Session
 
 
@@ -28,7 +29,9 @@ def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
     master_user.update_preference()
     master_user.update_library()
 
-    session = Session(id=session_id, users=[user])
+    username = user_info.get_user(user)['display_name']
+
+    session = Session(id=session_id, users=[user], name=username + "'s Party")
 
     session.change_vibe(body.vibe)
 

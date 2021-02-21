@@ -22,7 +22,6 @@ class User(DataClassJsonMixin):
 
     def __post_init__(self):
         self.spotipy = spotipy.Spotify(client_credentials_manager=self.credentials)
-        self.update()
 
     def update(self):
         self.update_preference()
