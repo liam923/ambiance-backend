@@ -1,5 +1,5 @@
 from dataclasses import field, dataclass
-from typing import List
+from typing import List, Optional
 import uuid
 
 from dataclasses_json import dataclass_json
@@ -13,7 +13,7 @@ from ambiance.model.session import Session
 @dataclass_json
 @dataclass
 class CreateInput:
-    preferences: List[str] = field(default_factory=list)
+    vibe: Optional[str] = None
 
 
 @dataclass_json
@@ -27,11 +27,20 @@ def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
     session_id = uuid.uuid4()
 
     # Update this user's preference
-    DB.users[user].update_preference()
+    master_user = DB.users[user]
+    master_user.update_preference()
+    master_user.update_library()
 
-    session = Session(id=session_id, users=[user])
+    session = Session(id=session_id, users=[user], pool=master_user.library)
+
+    if body.vibes is None:
+        session.change_vibe()
+    else:
+        session.change_vibe(body.vibe)
 
     DB.sessions.update(session_id, session)
+
+    return CreateOutput(session_id=session_id)
 
 
 @dataclass_json
@@ -53,9 +62,9 @@ def join(body: JoinInput, user: str, **kwargs) -> None:
 @dataclass
 class UpdateInput:
     session_id: str
-    vibe: any
+    vibe: str
 
 
 @endpoint(method=PUT, body=JoinInput)
 def update(body: UpdateInput, **kwargs) -> None:
-    pass
+    DB.sessions[UpdateInput.session_id].change_vibe(UpdateInput.vibe)
