@@ -14,6 +14,7 @@ class CreatePlaylistInput:
     session_id: str
     playlist_id: str = ""
     playlist_name: str = ""
+    live: bool = False
 
 
 @dataclass_json
@@ -41,6 +42,7 @@ def create(body: CreatePlaylistInput, user: str, **kwargs) -> CreatePlaylistOutp
                                                    date.today().strftime("%B %d, %Y"))
     # adds the tracks
     sp.playlist_add_items(playlist["id"], uri_list[:PLAYLIST_LENGTH])
+    db_inst.sessions[body.session_id].live = body.live
     if db_inst.sessions[body.session_id].live:
         db_inst.sessions[body.session_id].subscribed[user] = playlist["id"]
 
