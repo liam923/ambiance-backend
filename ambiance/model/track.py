@@ -13,7 +13,7 @@ class Track(DataClassJsonMixin):
     features: np.ndarray
 
     def __eq__(self, other):
-        return self.uri is other.uri
+        return self.uri == other.uri
 
     def __hash__(self):
         return str.__hash__(self.uri)
