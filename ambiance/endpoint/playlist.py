@@ -50,7 +50,7 @@ def create(body: CreatePlaylistInput, user: str, **kwargs) -> CreatePlaylistOutp
 # updates the playlist with new tracks
 def update(user_id: str, session_id: str):
     # instantiates spotipy
-    db_inst = DB()
+    db_inst = db.DB()
     sp = db_inst.users[user_id].spotipy
     # creates list of song uris
     uri_list = [track.uri for track in db_inst.sessions[session_id].pool]
