@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-import kwargs as kwargs
 from dataclasses_json import DataClassJsonMixin
 from django.http import JsonResponse
 
