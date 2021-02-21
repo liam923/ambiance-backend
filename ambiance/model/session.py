@@ -26,7 +26,6 @@ class Session(DataClassJsonMixin):
     jukeboxes: Dict[str, Jukebox] = field(default_factory=dict)
     vibe: Optional[str] = None
     pool: List[Track] = field(default_factory=list)
-    live: bool = False
     subscribed: Dict[str, str] = field(default_factory=dict)
 
     processed_data: SessionData = field(default_factory=SessionData)
@@ -61,9 +60,8 @@ class Session(DataClassJsonMixin):
         for jukebox in self.jukeboxes.values():
             jukebox.update_jukebox_queue()
 
-        if self.live:
-            for user in self.subscribed:
-                update(user, self.id)
+        for user in self.subscribed:
+            update(user, self.id)
 
     def change_vibe(self, uri: str = None) -> None:
         self.vibe = uri

@@ -42,8 +42,7 @@ def create(body: CreatePlaylistInput, user: str, **kwargs) -> CreatePlaylistOutp
                                                    date.today().strftime("%B %d, %Y"))
     # adds the tracks
     sp.playlist_add_items(playlist["id"], uri_list[:PLAYLIST_LENGTH])
-    db_inst.sessions[body.session_id].live = body.live
-    if db_inst.sessions[body.session_id].live:
+    if body.live:
         db_inst.sessions[body.session_id].subscribed[user] = playlist["id"]
 
     return CreatePlaylistOutput(body.session_id)
@@ -55,6 +54,9 @@ def update(user_id: str, session_id: str):
     db_inst = db.DB()
     sp = db_inst.users[user_id].spotipy
     # creates list of song uris
-    uri_list = [track.uri for track in db_inst.sessions[session_id].pool]
+    sesh = db_inst.sessions[session_id]
+    uri_list = [track.uri for track in sesh.pool]
+    # get the uri for the playlist
+    playlist_uri = sesh.subscribed[user_id]
     # replace all the tracks with the new pool of tracks
-    sp.playlist_replace_items(user_id, uri_list[:PLAYLIST_LENGTH])
+    sp.playlist_replace_items(playlist_uri, uri_list[:PLAYLIST_LENGTH])

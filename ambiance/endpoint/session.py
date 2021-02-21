@@ -13,7 +13,6 @@ from ambiance.model.session import Session
 @dataclass
 class CreateInput(DataClassJsonMixin):
     vibe: Optional[str] = None
-    live: bool = False
 
 
 @dataclass
@@ -34,8 +33,6 @@ def create(body: CreateInput, user: str, **kwargs) -> CreateOutput:
     session = Session(id=session_id, users=[user], name=username + "'s Party")
 
     session.change_vibe(body.vibe)
-
-    session.live = body.live
 
     db.DB().sessions[session_id] = session
 
@@ -66,8 +63,7 @@ def join(body: JoinInput, user: str, **kwargs) -> JoinOutput:
 @dataclass
 class UpdateInput(DataClassJsonMixin):
     session_id: str
-    vibe: Optional[str] = None
-    live_playlist: Optional[bool] = None
+    vibe: str
 
 
 @dataclass
@@ -77,9 +73,5 @@ class UpdateOutput(DataClassJsonMixin):
 
 @endpoint(method=PUT, body=UpdateInput)
 def update(body: UpdateInput, **kwargs) -> UpdateOutput:
-    sesh = db.DB().sessions[body.session_id]
-    if body.vibe is not None:
-        sesh.change_vibe(body.vibe)
-    if body.live_playlist is not None:
-        sesh.live = body.live_playlist
+    db.DB().sessions[body.session_id].change_vibe(body.vibe)
     return UpdateOutput(body.session_id)
